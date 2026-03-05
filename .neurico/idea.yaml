@@ -1,0 +1,33 @@
+idea:
+  title: 'Representation Drift Under Self-Reflection: Does Self-Critique Reshape Internal
+    States?'
+  domain: nlp
+  hypothesis: "When a large language model generates an initial answer, critiques\
+    \ itself, and then revises its answer, self-critique induces structured shifts\
+    \ in the model\u2019s internal representations\u2014particularly in the residual\
+    \ stream\u2014resulting in movement to a distinct and more structured reasoning\
+    \ subspace. If reflection is meaningful, we expect structured representation drift,\
+    \ improved linear separability of correct reasoning, and convergence toward a\
+    \ more stable reasoning manifold; if reflection is shallow, activations should\
+    \ remain near the original neighborhood with minimal structural change.\n"
+  background:
+    description: "LLMs are increasingly prompted to \u201Cthink again,\u201D critique\
+      \ themselves, and revise their answers. While self-reflection often improves\
+      \ performance, we do not know whether this improvement corresponds to meaningful\
+      \ internal representational change or merely shallow re-sampling.\nThis project\
+      \ investigates whether self-critique induces structured shifts in a model\u2019\
+      s internal representations, particularly in the residual stream.\nThe work connects\
+      \ prompting techniques with mechanistic interpretability, provides a measurable\
+      \ notion of \u201Ccognitive change\u201D in LLMs, directly informs recursive\
+      \ self-improvement agents and AI research automation, and bridges performance\
+      \ gains with internal dynamics. Extensions could compare self-critique vs human\
+      \ critique, single vs multi-round reflection, and small vs large models.\n"
+  metadata:
+    author: Ankit Singh
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/nry9k6GDuRb9mgETYC5L
+    idea_id: representation_drift_under_sel_20260305_224751_008a3136
+    created_at: '2026-03-05T22:47:51.894220'
+    status: submitted
+    github_repo_name: self-critique-drift-6de2-claude
+    github_repo_url: https://github.com/Hypogenic-AI/self-critique-drift-6de2-claude
