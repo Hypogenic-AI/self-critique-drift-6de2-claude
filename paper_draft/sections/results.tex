@@ -1,0 +1,101 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Behavioral Results}
+\label{sec:results:behavioral}
+
+\Tabref{tab:behavioral} summarizes the accuracy of each condition. The initial prompt achieves 90.5\% accuracy (181/200 correct). After self-critique and revision, accuracy drops to 84.0\% (168/200), a statistically significant decline (McNemar's $p = 0.011$). The control condition (re-prompting without critique) achieves 92.0\% (184/200), slightly outperforming the initial prompt.
+
+\begin{table}[t]
+    \centering
+    \caption{Behavioral results across conditions on 200 \gsmk problems. Self-critique degrades accuracy by 6.5 percentage points relative to the initial answer. The control (re-prompt) condition slightly improves over initial. McNemar's test confirms the initial-to-revised decline is significant.}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Condition} & \textbf{Accuracy (\%)} & \textbf{Correct} & \textbf{Wrong} \\
+        \midrule
+        Initial & 90.5 & 181 & 19 \\
+        Revised (after critique) & 84.0 \decrease & 168 & 32 \\
+        Control (re-prompt) & \textbf{92.0} & 184 & 16 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:behavioral}
+\end{table}
+
+Of the 200 problems, 27 (13.5\%) had their answer changed after self-critique. Among these, 18 changed from correct to wrong and only 5 changed from wrong to correct, yielding a net degradation of 13 problems.
+
+\subsection{Representational Drift}
+\label{sec:results:drift}
+
+\para{Self-critique induces significantly more drift than re-prompting.} \Tabref{tab:drift} reports cosine similarity between initial and revised representations (critique drift) versus initial and control representations (control drift) at selected layers. Across all 28 layers, critique drift is significantly larger than control drift (Wilcoxon signed-rank test, $p < 0.05$ after Benjamini-Hochberg correction). Effect sizes range from Cohen's $d = -0.24$ to $-0.32$, indicating small-to-medium effects.
+
+\begin{table}[t]
+    \centering
+    \caption{Cosine similarity between initial and post-condition representations at selected layers (mean $\pm$ std over 200 problems). Lower values indicate more drift. All layers show significantly greater drift for critique than control (FDR-corrected $p < 0.05$). Best (lowest drift) values in \textbf{bold}.}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        \textbf{Layer} & \textbf{Critique Drift} & \textbf{Control Drift} & \textbf{$p$-value} & \textbf{Cohen's $d$} \\
+        \midrule
+        0 (embed) & $0.616 \pm 0.31$ & $\textbf{0.721} \pm 0.28$ & 0.011 & $-0.24$ \\
+        7 (early) & $0.636 \pm 0.26$ & $\textbf{0.752} \pm 0.22$ & $< 0.0001$ & $-0.32$ \\
+        14 (mid) & $0.598 \pm 0.28$ & $\textbf{0.721} \pm 0.24$ & $< 0.0001$ & $-0.32$ \\
+        21 (late) & $0.502 \pm 0.32$ & $\textbf{0.629} \pm 0.30$ & 0.0002 & $-0.26$ \\
+        27 (final) & $0.535 \pm 0.32$ & $\textbf{0.654} \pm 0.29$ & 0.0009 & $-0.24$ \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:drift}
+\end{table}
+
+The drift pattern is global: it is not concentrated in specific layers but spans the entire network. Middle layers (7--14) show the largest effect sizes (Cohen's $d \approx -0.32$), suggesting these layers are most sensitive to the critique context.
+
+\subsection{Linear Probe Analysis}
+\label{sec:results:probes}
+
+\Tabref{tab:probes} reports probe \auc for predicting answer correctness from layer activations. If self-critique moved representations toward better-calibrated states, we would expect higher \auc for revised representations. Instead, we observe the opposite: revised representations generally yield \emph{lower} probe \auc than initial or control representations, particularly in early-to-middle layers.
+
+\begin{table}[t]
+    \centering
+    \caption{Linear probe \auc for correctness prediction (5-fold CV) at selected layers. Higher is better. Self-critique degrades probe accuracy relative to both initial and control conditions at most layers. Best values in \textbf{bold}.}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Layer} & \textbf{Initial} & \textbf{Revised} & \textbf{Control} \\
+        \midrule
+        0 & 0.611 & 0.663 & \textbf{0.764} \\
+        9 & 0.623 & 0.521 & \textbf{0.644} \\
+        12 & 0.613 & 0.522 & \textbf{0.622} \\
+        18 & 0.545 & 0.563 & \textbf{0.612} \\
+        24 & 0.448 & 0.500 & \textbf{0.679} \\
+        27 & 0.513 & 0.546 & \textbf{0.565} \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:probes}
+\end{table}
+
+The control condition consistently achieves the highest probe \auc across layers, with particularly strong performance at layer 24 (0.679 vs.\ 0.500 for revised). This suggests that simple re-prompting preserves or even improves the linear structure encoding correctness, while self-critique disrupts it.
+
+\subsection{PCA Subspace Analysis}
+\label{sec:results:pca}
+
+We examine whether self-critique preserves or reorganizes the principal subspace of activations. \Tabref{tab:pca} reports variance explained by the top 3 PCs and the cosine alignment of PC1 and PC2 between initial and revised activations.
+
+\begin{table}[t]
+    \centering
+    \caption{PCA subspace analysis at selected layers. Variance explained is for the revised-condition activations. Alignment measures cosine similarity between the corresponding PCs of initial and revised activations. High PC1 alignment with low PC2 alignment (layer 14) indicates that critique preserves coarse structure but disrupts finer features.}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Layer} & \textbf{Var.\ Expl.\ (3 PCs)} & \textbf{PC1 Align.} & \textbf{PC2 Align.} \\
+        \midrule
+        7 & 37.0\% & 0.899 & 0.649 \\
+        14 & 42.0\% & 0.862 & 0.064 \\
+        21 & 49.5\% & 0.805 & 0.794 \\
+        27 & 63.5\% & 0.835 & 0.845 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:pca}
+\end{table}
+
+PC1 alignment remains high across all layers ($> 0.80$), indicating that the dominant variance direction is preserved. However, PC2 alignment drops to near zero at layer 14 (0.064), revealing that the second principal component---capturing finer-grained variance---is substantially reorganized by critique at middle layers. This selective disruption of higher-order structure while preserving the dominant direction is consistent with a perturbation that disturbs fine-grained reasoning features without collapsing the overall representation.
+
+\subsection{Drift--Outcome Correlation}
+\label{sec:results:correlation}
+
+We test whether larger representational drift predicts answer change. Point-biserial correlations between cosine drift magnitude and binary answer change are positive and significant across all layers ($r \approx 0.15$--$0.20$, $p < 0.05$), indicating that problems with more drift are more likely to produce different answers. However, the correlations are weak, suggesting that substantial drift occurs even when the answer does not change---self-critique perturbs representations broadly, not just at the decision boundary.

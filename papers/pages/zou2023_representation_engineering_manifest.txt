@@ -1,0 +1,17 @@
+PDF: papers/zou2023_representation_engineering.pdf
+Total pages: 56
+Pages per chunk: 5
+
+Chunks:
+  zou2023_representation_engineering_chunk_001.pdf: pages 1-5
+  zou2023_representation_engineering_chunk_002.pdf: pages 6-10
+  zou2023_representation_engineering_chunk_003.pdf: pages 11-15
+  zou2023_representation_engineering_chunk_004.pdf: pages 16-20
+  zou2023_representation_engineering_chunk_005.pdf: pages 21-25
+  zou2023_representation_engineering_chunk_006.pdf: pages 26-30
+  zou2023_representation_engineering_chunk_007.pdf: pages 31-35
+  zou2023_representation_engineering_chunk_008.pdf: pages 36-40
+  zou2023_representation_engineering_chunk_009.pdf: pages 41-45
+  zou2023_representation_engineering_chunk_010.pdf: pages 46-50
+  zou2023_representation_engineering_chunk_011.pdf: pages 51-55
+  zou2023_representation_engineering_chunk_012.pdf: page 56

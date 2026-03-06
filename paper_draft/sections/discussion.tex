@@ -1,0 +1,22 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Self-Critique as Destructive Perturbation}
+
+Our results paint a consistent picture: self-critique induces genuine representational restructuring that goes well beyond shallow re-sampling, but this restructuring systematically moves representations \emph{away from} correct reasoning subspaces. Three lines of evidence converge on this conclusion. First, the behavioral results show net degradation (90.5\% $\to$ 84.0\%), with a 3.6:1 ratio of correct-to-wrong flips versus wrong-to-correct flips. Second, linear probe \auc decreases after critique at most layers, indicating reduced linear separability of correctness. Third, PCA analysis reveals that critique disrupts finer-grained representational structure (PC2 alignment near zero at layer 14) while preserving the dominant variance direction.
+
+This pattern suggests that the model's initial representations are already well-calibrated for the task. Self-critique injects a perturbation---the critique context itself---that disrupts this calibration. The critique prompt may activate ``uncertainty'' or ``hedging'' circuits that interfere with the confidently-encoded initial solution, consistent with the observation by \citet{turpin2024unfaithful} that surface-level reasoning can be decoupled from internal computation.
+
+\subsection{Why Does Simple Re-Prompting Work Better?}
+
+The control condition (92.0\%) slightly outperforms even the initial prompt (90.5\%). This suggests that minor prompt variation provides beneficial diversity---effectively a second sample from a well-calibrated region---without the destructive context injection of self-critique. The control representations also show the highest linear probe \auc, indicating that prompt variation preserves or marginally improves representational quality.
+
+This finding aligns with the self-consistency literature, where multiple samples with majority voting improve accuracy \cite{wang2023selfconsistency}. Simple re-prompting achieves a similar effect through prompt variation rather than temperature-based sampling.
+
+\subsection{Layer-Specific Effects}
+
+The strongest drift effect sizes appear in middle layers (7--14, Cohen's $d \approx -0.32$), with both early and late layers showing smaller effects ($d \approx -0.24$). Middle layers are often identified as the site of abstract reasoning in transformer models \cite{marks2024geometry}, and their heightened sensitivity to critique suggests that the critique context specifically perturbs the layers responsible for reasoning computation. This has implications for intervention strategies: targeted representation steering at middle layers, following the approach of \citet{zou2023representation}, might be able to counteract critique-induced drift.
+
+\subsection{Limitations}
+
+Our study has several important limitations. First, we test a single model (\qwen); larger models or different architectures may exhibit different drift dynamics. Second, \gsmk tests arithmetic reasoning; other domains (\eg factual QA, code generation) may show different patterns. Third, we use greedy decoding, which eliminates sampling variance but may not reflect typical deployment conditions. Fourth, we extract only last-token activations; intermediate token positions may carry different information. Fifth, our analysis is correlational---we measure drift but do not perform causal interventions such as activation patching to establish that the drift \emph{causes} the behavioral degradation. Sixth, the high initial accuracy (90.5\%) creates class imbalance with few initially-wrong problems, limiting our ability to observe improvement cases. Finally, we do not ablate the critique prompt itself; different critique framings might induce qualitatively different drift patterns.

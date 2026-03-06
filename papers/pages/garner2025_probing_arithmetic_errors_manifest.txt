@@ -1,0 +1,11 @@
+PDF: papers/garner2025_probing_arithmetic_errors.pdf
+Total pages: 18
+Pages per chunk: 3
+
+Chunks:
+  garner2025_probing_arithmetic_errors_chunk_001.pdf: pages 1-3
+  garner2025_probing_arithmetic_errors_chunk_002.pdf: pages 4-6
+  garner2025_probing_arithmetic_errors_chunk_003.pdf: pages 7-9
+  garner2025_probing_arithmetic_errors_chunk_004.pdf: pages 10-12
+  garner2025_probing_arithmetic_errors_chunk_005.pdf: pages 13-15
+  garner2025_probing_arithmetic_errors_chunk_006.pdf: pages 16-18

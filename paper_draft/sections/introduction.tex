@@ -1,0 +1,18 @@
+\section{Introduction}
+\label{sec:intro}
+
+Self-reflection is becoming a core building block of LLM agent architectures. Systems like Self-Refine \cite{madaan2023selfrefine} and Reflexion \cite{shinn2023reflexion} prompt models to critique their own outputs and revise accordingly, with the expectation that this loop moves the model closer to correct answers. Yet a growing body of evidence suggests the opposite: \citet{huang2024selfcorrect} showed that intrinsic self-correction---without external feedback---consistently \emph{degrades} performance across multiple benchmarks and models. This creates a puzzle. If self-critique changes outputs (sometimes dramatically), what is happening inside the model? Does the critique-revision cycle restructure the model's internal representations, or does it merely re-sample from the same distribution with a perturbed prompt?
+
+This question matters because internal representations are the substrate of model computation. Prior work has shown that residual stream activations encode rich information about reasoning quality: models internally represent correct answers even when they output wrong ones \cite{garner2025probing}, and linear probes can predict eventual chain-of-thought correctness from early hidden states \cite{david2025temporal}. If self-critique genuinely restructures these representations, it could in principle move them toward regions that encode better reasoning. If instead it merely perturbs them, the observed behavioral degradation would follow naturally.
+
+We address this gap by directly measuring how residual stream activations shift across the generate-critique-revise pipeline. Using \qwen on 200 \gsmk problems, we extract activations from all 28 transformer layers at four stages: initial answer, self-critique, revised answer, and a control condition (re-prompting without critique). We then quantify drift via cosine similarity, train linear probes for correctness prediction, and analyze subspace geometry via PCA.
+
+Our key finding is that self-critique induces significantly more representational drift than re-prompting ($p < 0.01$ at all 28 layers after Benjamini-Hochberg correction), but this drift is destructive---accuracy drops by 6.5 percentage points, linear probe separability decreases, and representations move away from correct reasoning subspaces. Self-critique is not shallow re-sampling; it is genuine restructuring in the wrong direction.
+
+We make the following contributions:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We provide the first study tracking residual stream representation drift across the self-critique pipeline, showing that critique induces significantly larger shifts than prompt-variation controls at all transformer layers.
+    \item We demonstrate that this representational restructuring is destructive: it degrades linear separability of correctness and moves activations away from initially well-calibrated regions.
+    \item We connect behavioral observations (accuracy degradation) to mechanistic evidence (representation drift), bridging the gap between prior work on self-correction failure and probing-based interpretability.
+    \item We identify layer-specific drift patterns, finding that middle layers (7--14) are most affected by self-critique, with implications for targeted intervention strategies.
+\end{itemize}

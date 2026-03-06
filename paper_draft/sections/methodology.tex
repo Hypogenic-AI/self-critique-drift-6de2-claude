@@ -1,0 +1,47 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Overview}
+\label{sec:method:overview}
+
+We design a four-condition experiment to measure how self-critique affects residual stream representations. For each math problem, we run a pipeline with four stages: (1)~generate an initial answer, (2)~generate a self-critique of that answer, (3)~generate a revised answer conditioned on the critique, and (4)~generate a control answer by re-prompting without critique. At each stage, we extract residual stream activations from all transformer layers, then analyze how representations shift between conditions.
+
+\subsection{Model and Dataset}
+\label{sec:method:model}
+
+We use \qwen (7.6B parameters, 28 transformer layers, hidden dimension $d = 3{,}584$), loaded in float16 precision on a single NVIDIA RTX 3090. We select this model for its strong math reasoning capabilities and compatibility with activation extraction via forward hooks.
+
+We evaluate on 200 problems from the \gsmk test split \cite{cobbe2021gsm8k}, a benchmark of multi-step arithmetic word problems with ground truth numerical answers. We use the first 200 problems in dataset order without selection bias.
+
+\subsection{Pipeline Design}
+\label{sec:method:pipeline}
+
+Each problem is processed through four prompting conditions:
+
+\para{Initial.} We prompt the model with: ``Solve the following math problem step by step. After your reasoning, provide your final answer as a number after `\#\#\#\# '.'' This establishes the baseline representation and answer.
+
+\para{Critique.} We provide the model its own initial response and ask it to critique: ``You previously solved this problem: [question]. Your solution was: [initial\_answer]. Now carefully critique your own solution. Identify any errors.''
+
+\para{Revised.} We prompt revision conditioned on the critique: ``Your original solution was: [initial\_answer]. Your self-critique identified these issues: [critique]. Now provide a revised solution.''
+
+\para{Control.} We re-prompt the model with a slightly rephrased version of the initial prompt (``Please solve this carefully'') without any critique context. This isolates the effect of critique from simple prompt variation.
+
+All conditions use greedy decoding (temperature $= 0$) with a maximum of 512 new tokens and random seed 42 for reproducibility.
+
+\subsection{Activation Extraction}
+\label{sec:method:activations}
+
+We register forward hooks on each of the 28 transformer layers to capture residual stream hidden states. For each condition, we extract the activation vector $\vh_\ell \in \sR^{3584}$ at the \emph{last generated token} position for every layer $\ell \in \{0, 1, \ldots, 27\}$. This follows the probing methodology of \citet{marks2024geometry}, where last-token activations capture the model's final representation used for next-token prediction. The result is a tensor of activations with shape $(200, 4, 28, 3584)$---200 problems $\times$ 4 conditions $\times$ 28 layers $\times$ 3,584 dimensions.
+
+\subsection{Analysis Methods}
+\label{sec:method:analysis}
+
+\para{Drift quantification.} We measure representational drift between conditions using cosine similarity $\cossim(\vh_\ell^{(i)}, \vh_\ell^{(j)})$ and L2 distance $\|\vh_\ell^{(i)} - \vh_\ell^{(j)}\|_2$ for each problem at each layer, where $i, j$ index conditions. We compare critique-induced drift (initial $\to$ revised) against control drift (initial $\to$ control) using paired Wilcoxon signed-rank tests with Benjamini-Hochberg FDR correction across layers.
+
+\para{Linear probes.} We train $L_2$-regularized logistic regression classifiers ($C = 1.0$) to predict binary answer correctness from layer activations, using 5-fold stratified cross-validation. We report area under the ROC curve (\auc) for each condition and layer.
+
+\para{PCA subspace analysis.} We apply PCA to activations from each condition at each layer, measuring variance explained by the top 3 principal components and the cosine alignment between principal components across conditions. High alignment indicates preserved subspace structure; low alignment indicates restructuring of the representational geometry.
+
+\para{Drift--outcome correlation.} We compute point-biserial correlations between drift magnitude (cosine distance) and binary answer change (whether the revised answer differs from the initial answer) to test whether larger drift predicts behavioral change.
+
+\para{Statistical testing.} We use McNemar's test for paired accuracy comparisons between conditions. All $p$-values are reported with Benjamini-Hochberg FDR correction where multiple comparisons are performed. We report Cohen's $d$ effect sizes throughout.

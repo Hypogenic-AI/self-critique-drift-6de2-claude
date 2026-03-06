@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/self-critique-drift-6de2-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/self-critique-drift-6de2-claude/literature_review.md",
+        "resources_catalog": "/workspaces/self-critique-drift-6de2-claude/resources.md",
+        "papers_dir": "/workspaces/self-critique-drift-6de2-claude/papers",
+        "datasets_dir": "/workspaces/self-critique-drift-6de2-claude/datasets",
+        "code_dir": "/workspaces/self-critique-drift-6de2-claude/code"
+      },
+      "log_file": "/workspaces/self-critique-drift-6de2-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/self-critique-drift-6de2-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 1301.9821691513062
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 10698.515429496765,
+      "log_file": "/workspaces/self-critique-drift-6de2-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/self-critique-drift-6de2-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/self-critique-drift-6de2-claude"
+}

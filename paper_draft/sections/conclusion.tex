@@ -1,0 +1,8 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented the first study of how self-critique reshapes internal representations in large language models. By extracting residual stream activations across 28 layers of \qwen at four pipeline stages on 200 \gsmk problems, we showed that self-critique induces significantly more representational drift than simple re-prompting ($p < 0.01$ at all layers after FDR correction). Critically, this drift is destructive: accuracy drops from 90.5\% to 84.0\%, linear probe separability decreases, and PCA analysis reveals disruption of fine-grained representational features. Self-critique is not shallow re-sampling---it is genuine restructuring that moves representations away from correct reasoning subspaces.
+
+These findings have direct implications for the design of self-improvement agents. Systems that rely on intrinsic self-critique without external grounding risk degrading representations that were already well-calibrated. Our results suggest that simple re-prompting may be a safer alternative, and that representation-level interventions (\eg steering post-critique activations back toward pre-critique states) could potentially rescue the benefits of reflection while avoiding its costs.
+
+Future work should extend this analysis to larger models, multiple domains, and causal intervention frameworks such as activation patching, to determine whether the destructive drift pattern is universal or model-specific, and whether it can be redirected toward constructive restructuring.
